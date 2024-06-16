@@ -4,7 +4,7 @@ let ctx = canvas.getContext('2d');
 canvas.width = 800;
 canvas.height = 600;
 
-let startButton = document.getElementById('startButton');
+
 
 class Snake {
     constructor(startLength, x, y, direction) {
@@ -156,13 +156,23 @@ class CollisionDetection {
 }
 
 // game variables
+function gameReset(){
+    snake = new Snake(5, canvas.width / 2, canvas.height / 2, 'right');
+    collision = new CollisionDetection(snake, food);
+    score = 0;
+    document.getElementById('score').innerText = 'Score: ' + score;
+    food.generateNewPosition();
+    
+
+}
+
 let gameState = 'paused';
 const fps = 1000 / 10; // used to control game speed
 var actionLock = false; // prevent multiple actions in one frame
 let score = 0;
-const snake = new Snake(5, canvas.width / 2, canvas.height / 2, 'right');
-const food = new Food();
-const collision = new CollisionDetection(snake, food);
+let snake = new Snake(5, canvas.width / 2, canvas.height / 2, 'right');
+let food = new Food();
+let collision = new CollisionDetection(snake, food);
 
 function gameLoop() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -171,7 +181,7 @@ function gameLoop() {
     food.draw();
 
     if (gameState === 'paused') {
-        // implement wait for key press to start game
+        let startButton = document.getElementById('startButton');
         startButton.addEventListener('click', function () {
             document.getElementById('pauseMenu').style.display = 'none';
             gameState = 'running';
@@ -187,7 +197,6 @@ function gameLoop() {
             collision.bodyCollision();
 
             console.log(snake.getHeadPosition());
-
             //console.log(snake.getBodyPosition());
             requestAnimationFrame(gameLoop); // loop game
         }, fps);
@@ -195,7 +204,16 @@ function gameLoop() {
 
     if (gameState === 'gameOver') {
         // implement game over screen
-        console.log('Game Over');
+        let restartButton = document.getElementById('restartButton');
+        let gameOverMenu = document.getElementById('gameOverMenu');
+        gameOverMenu.style.display = 'block';
+        document.getElementById('finalScore').innerText = 'Final Score: ' + score;
+        restartButton.addEventListener('click', function () {
+            gameOverMenu.style.display = 'none';
+            gameReset();
+            gameState = 'running';
+            requestAnimationFrame(gameLoop);
+        });
     }
 }
 
