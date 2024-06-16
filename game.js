@@ -4,6 +4,8 @@ let ctx = canvas.getContext('2d');
 canvas.width = 800;
 canvas.height = 600;
 
+let startButton = document.getElementById('startButton');
+
 class Snake {
     constructor(startLength, x, y, direction) {
         this.playerBody = [];
@@ -154,7 +156,7 @@ class CollisionDetection {
 }
 
 // game variables
-let gameState = 'running';
+let gameState = 'paused';
 const fps = 1000 / 10; // used to control game speed
 var actionLock = false; // prevent multiple actions in one frame
 let score = 0;
@@ -170,6 +172,11 @@ function gameLoop() {
 
     if (gameState === 'paused') {
         // implement wait for key press to start game
+        startButton.addEventListener('click', function () {
+            document.getElementById('pauseMenu').style.display = 'none';
+            gameState = 'running';
+            requestAnimationFrame(gameLoop);
+        });
     }
 
     if (gameState === 'running') {
